@@ -1,4 +1,4 @@
-notion-client>=0.8.0
-pydantic~=1.9.0
-pandas 
-dataclasses
+notion-client~=2.2.1
+pandas~=2.0.2
+dataclasses~=0.6
+pydantic~=2.9.2
