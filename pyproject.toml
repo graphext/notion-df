@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools >= 64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+authors = [
+    { name = "Zejiang Shen", email = "zejiangshen@gmail.com" },
+    { name = "Jorge Oses", email = "jorge@graphext.com" },
+    { name = "Thomas Buhrmann", email = "thomas@graphext.com" },
+]
+name = "notion_df"
+description = "Notion-DF: Seamlessly Connecting Notion Database with Pandas DataFrame"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+dynamic = ["version"]
+dependencies = ["notion-client>=2.2.1", "pandas>=2.0.2", "pydantic>=2.9.2"]
+
+[project.optional-dependencies]
+dev = ["black", "pytest"]
+
+[project.urls]
+Repository = "https://github.com/graphext/notion-df"
+
+[tool.setuptools.dynamic]
+version = { attr = "notion_df.__version__" }
