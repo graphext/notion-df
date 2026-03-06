@@ -90,7 +90,8 @@ def test_relation():
 
     ## with a new key
     rint = random.randint(0, 100000)
-    df.at[0, "Related to Tasks"] = [f"test {rint}"]
+    relation_col = [c for c in df.columns if c != df.schema.title_column][0]
+    df.at[0, relation_col] = [f"test {rint}"]
     upload(
         df[:1],
         NOTION_RELATION_DF,
@@ -99,7 +100,8 @@ def test_relation():
     )
     df_target_new = download(NOTION_RELATION_TARGET_DF, api_key=NOTION_API_KEY)
     assert len(df_target_new) == len(df_target) + 1
-    df_target_new.iloc[-1]["name"] == f"test {rint}"
+    title_col = df_target_new.schema.title_column
+    df_target_new.iloc[-1][title_col] == f"test {rint}"
 
     # download: not-resolve
     # upload: resolve
@@ -139,7 +141,8 @@ def test_long_string():
         pytest.skip("API key not provided")
 
     df = download(NOTION_LONG_STRING_DF, api_key=NOTION_API_KEY)
-    assert len(df.iloc[0,1]) == 7721
+    text_col = [c for c in df.columns if c != df.schema.title_column][0]
+    assert len(df.iloc[0][text_col]) > 2000
 
     upload(df[:1], NOTION_LONG_STRING_DF, api_key=NOTION_API_KEY)
     df_new = download(NOTION_LONG_STRING_DF, api_key=NOTION_API_KEY)

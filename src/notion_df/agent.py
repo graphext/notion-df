@@ -436,6 +436,7 @@ def upload(
                             relation_df.schema,
                             client,
                             "warn",
+                            None,
                         )
                         appended_relation_df = load_df_from_queries(responses)
                         obj_string_to_id.update(
