@@ -362,16 +362,16 @@ def upload(
         if hasattr(df, "schema"):
             schema = df.schema
 
-    if not _is_notion_database(notion_url):
+    if is_uuid(notion_url) or _is_notion_database(notion_url):
+        databse_id = notion_url if is_uuid(notion_url) else get_id(notion_url)
+        if schema is None:
+            schema = load_database_schema(databse_id, client)
+    else:
         if schema is None:
             schema = DatabaseSchema.from_df(df, title_col=title_col)
         database_properties = create_database(get_id(notion_url), client, schema, title)
         databse_id = database_properties["id"]
         notion_url = database_properties["url"]
-    else:
-        databse_id = get_id(notion_url)
-        if schema is None:
-            schema = load_database_schema(databse_id, client)
 
     # At this stage, we should have the appropriate schema
     assert schema is not None
