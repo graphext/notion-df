@@ -3,7 +3,7 @@ import warnings
 import itertools
 from dataclasses import dataclass
 
-from pydantic import field_validator, BaseModel, validator, parse_obj_as
+from pydantic import field_validator, BaseModel, model_validator, TypeAdapter
 from pandas.api.types import (
     is_datetime64_any_dtype,
     is_numeric_dtype,
@@ -38,16 +38,14 @@ class BasePropertyConfig(BaseModel):
     def query_dict(self):
         return flatten_dict(self.dict())
 
-    # TODO[pydantic]: We couldn't refactor the `validator`, please replace it by `field_validator` manually.
-    # Check https://docs.pydantic.dev/dev-v2/migration/#changes-to-validators for more information.
-    @validator("type", always=True)
-    def automatically_set_type_value(cls, v):
-        _type = list(cls.__fields__.keys())[-1]
-        if v is None:
-            return _type
+    @model_validator(mode="after")
+    def automatically_set_type_value(self) -> "BasePropertyConfig":
+        _type = list(self.__class__.model_fields.keys())[-1]
+        if self.type is None:
+            self.type = _type
         else:
-            assert _type == v, f"{_type} != {v}"
-            return _type
+            assert _type == self.type, f"{_type} != {self.type}"
+        return self
 
 
 class TitleConfig(BasePropertyConfig):
@@ -244,7 +242,7 @@ NON_EDITABLE_TYPES = [
 
 
 def parse_single_config(data: Dict) -> BasePropertyConfig:
-    return parse_obj_as(CONFIGS_MAPPING[data["type"]], data)
+    return TypeAdapter(CONFIGS_MAPPING[data["type"]]).validate_python(data)
 
 
 CONFIGS_DF_TRANSFORMER = {

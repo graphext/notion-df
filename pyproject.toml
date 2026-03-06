@@ -14,7 +14,7 @@ readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
 dynamic = ["version"]
-dependencies = ["notion-client>=2.2.1", "pandas>=2.0.2", "pydantic>=2.9.2"]
+dependencies = ["notion-client>=2.2.1", "pandas>=2.0.2", "pydantic>=2.10"]
 
 [project.optional-dependencies]
 dev = ["black", "pytest"]
